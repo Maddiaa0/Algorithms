@@ -26,12 +26,16 @@ import org.junit.runners.JUnit4;
  *	100 random          |  0.2134  |   0.2572 |   0.2574  |  0.2486  |  0.2526
  *	1000 random         |  2.2462  |   3.2518 |   1.2849  |  1.1571  |  5.0088
  *	1000 few unique     |  1.846   |   1.6884 |   1.1346  |  1.3160  |  3.7028
- *	1000 nearly ordered |  0.7060  |   2.4731 |   0.7054  |  1.1499	 |  4.9844
+ *	1000 nearly ordered |  0.7060  |   2.4731 |   1.2431  |  1.1499	 |  4.9844
  *	1000 reverse order  |  3.2952  |   5.4625 |   1.1944  |  1.1299  |  4.9283
  *	1000 sorted         |  0.4474  |   4.2910 |   1.1150  |  1.3466  |  4.8648
  *  
  *  a. Which of the sorting algorithms does the order of input have an impact on? Why?
  *  	
+ *  	Selection sort is most impacted by the order of impact due to the algorithmn needing to 
+ *  	searching for the smallest min in the list consistently each time it passes. Leading to
+ *  	an increasing amount of comparisons as the order increases 
+ *  
  *  
  *  b. Which algorithm has the biggest difference between the best and worst performance, based
  *	   on the type of input, for the input of size 1000? Why?
@@ -44,14 +48,24 @@ import org.junit.runners.JUnit4;
  *     based on the input size? Please consider only input files with random order for this answer.
  *		
  *		The best scalability comes from the merge sort algorithmns, due to their logarithmic growing time. While selection
- *		sort has the worst input time 
+ *		sort has the worst scalability due to its multiple swaps.
+ *
  *
  *	d. Did you observe any difference between iterative and recursive implementations of merge
  *	   sort?
+ *		
+ *		The recursive implementation for mergesort has more consistent results than the iterative implementation
+ *		but they appear to perform very similarly 
  *	
  *
  *	e. Which algorithm is the fastest for each of the 7 input files? 
- *
+ *		10 random			- selection sort
+ *		100 random			- insertion sort
+ *		1000 random			- merge sort recursive
+ *		1000 few unique		- merge sort iterative
+ *		1000 nearly ordered	- insertion sort
+ *		1000 reverse order	- merge sort recursive
+ *		1000 sorted			- insertion sort
  *  
  *  
  */
@@ -78,21 +92,21 @@ public class SortComparisonTest
     	
     	//test one
     	long startTime = System.nanoTime();
-    	SortComparison.selectionSort(copy);
+    	SortComparison.mergeSortIterative(copy);
     	long endTime = System.nanoTime();
     	totalTime += (endTime - startTime);
     	
     	//test two
     	copy = tenNumbers;
     	startTime = System.nanoTime();
-    	SortComparison.selectionSort(copy);
+    	SortComparison.mergeSortIterative(copy);
     	endTime = System.nanoTime();
     	totalTime += (endTime - startTime);
     	
     	//test 3
     	copy = tenNumbers;
     	startTime = System.nanoTime();
-    	SortComparison.selectionSort(copy);
+    	SortComparison.mergeSortIterative(copy);
     	endTime = System.nanoTime();
     	totalTime += (endTime - startTime);
     	
