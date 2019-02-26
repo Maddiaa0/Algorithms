@@ -20,22 +20,91 @@ import org.junit.runners.JUnit4;
  *  @author Sean Cheetham 17338129
  *  @version HT 2019
  *  
- *	 *  *all results below in ms*
- *	                    |  insert  |   quick  |    merge iter |  merge recur |  selection
- *	10 random           |          |          |    		      |  	         |  
- *	100 random          |          |          |    		      |  		     |  
- *	1000 random         |          |		  |    		      |  		     |  
- *	1000 few unique     |          |   		  |    		      |  		     |  
- *	1000 nearly ordered |          |   		  |    		      | 		     |  
- *	1000 reverse order  |          |   		  |    		      |  		     |  
- *	1000 sorted         |          |   		  |     	      |   	 	     |  
+ *	times are in ms
+ *	                    |  insert  |   quick  |   merge i |  merge r |  selection
+ *	10 random           |  0.1863  |   0.1830 |   0.1878  |  0.1772  |  0.1737
+ *	100 random          |  0.2134  |   0.2572 |   0.2574  |  0.2486  |  0.2526
+ *	1000 random         |  2.2462  |   3.2518 |   1.2849  |  1.1571  |  5.0088
+ *	1000 few unique     |  1.846   |   1.6884 |   1.1346  |  1.3160  |  3.7028
+ *	1000 nearly ordered |  0.7060  |   2.4731 |   0.7054  |  1.1499	 |  4.9844
+ *	1000 reverse order  |  3.2952  |   5.4625 |   1.1944  |  1.1299  |  4.9283
+ *	1000 sorted         |  0.4474  |   4.2910 |   1.1150  |  1.3466  |  4.8648
  *  
+ *  a. Which of the sorting algorithms does the order of input have an impact on? Why?
+ *  	
+ *  
+ *  b. Which algorithm has the biggest difference between the best and worst performance, based
+ *	   on the type of input, for the input of size 1000? Why?
+ *		
+ *		Insertion sort has a Largest difference in time taken as when the data is sorted nearly or is sorted 
+ *		it takes O(n), but when the data is in reverse order it takes O(n^2) as the orst case.
+ *	
+ *
+ *	c. Which algorithm has the best/worst scalability, i.e., the difference in performance time
+ *     based on the input size? Please consider only input files with random order for this answer.
+ *		
+ *		The best scalability comes from the merge sort algorithmns, due to their logarithmic growing time. While selection
+ *		sort has the worst input time 
+ *
+ *	d. Did you observe any difference between iterative and recursive implementations of merge
+ *	   sort?
+ *	
+ *
+ *	e. Which algorithm is the fastest for each of the 7 input files? 
+ *
  *  
  *  
  */
 @RunWith(JUnit4.class)
 public class SortComparisonTest
 {
+	
+	 /**
+     *  Main Method.
+     *  Use this main method to create the experiments needed to answer the experimental performance questions of this assignment.
+     *
+     */
+    public static void main(String[] args)
+    { 	
+        //TODO: implement this method
+    	//repeated the steps below for each of the files and for each sort 
+    	
+    	
+    	double[] tenNumbers = getFileContent(fileScanner("numbers/numbersNearlyOrdered1000.txt"));
+    	
+    	double[] copy = tenNumbers;
+    	
+    	long totalTime = 0;
+    	
+    	//test one
+    	long startTime = System.nanoTime();
+    	SortComparison.selectionSort(copy);
+    	long endTime = System.nanoTime();
+    	totalTime += (endTime - startTime);
+    	
+    	//test two
+    	copy = tenNumbers;
+    	startTime = System.nanoTime();
+    	SortComparison.selectionSort(copy);
+    	endTime = System.nanoTime();
+    	totalTime += (endTime - startTime);
+    	
+    	//test 3
+    	copy = tenNumbers;
+    	startTime = System.nanoTime();
+    	SortComparison.selectionSort(copy);
+    	endTime = System.nanoTime();
+    	totalTime += (endTime - startTime);
+    	
+    	
+    	long averageTime = totalTime / 3;
+    	//divide by a million for milli secconds
+    	System.out.print(averageTime );
+    	
+    	
+    }
+	
+	
 	/*
 	//~ Constructor ........................................................
     @Test
@@ -160,50 +229,7 @@ public class SortComparisonTest
     
 
     // ----------------------------------------------------------
-    /**
-     *  Main Method.
-     *  Use this main method to create the experiments needed to answer the experimental performance questions of this assignment.
-     *
-     */
-    public static void main(String[] args)
-    { 	
-        //TODO: implement this method
-    	//repeated the steps below for each of the files and for each sort 
-    	
-    	
-    	double[] tenNumbers = getFileContent(fileScanner("numbers/numbers10.txt"));
-    	
-    	double[] copy = tenNumbers;
-    	
-    	long totalTime = 0;
-    	
-    	//test one
-    	long startTime = System.nanoTime();
-    	SortComparison.selectionSort(copy);
-    	long endTime = System.nanoTime();
-    	totalTime += (endTime - startTime);
-    	
-    	//test two
-    	copy = tenNumbers;
-    	startTime = System.nanoTime();
-    	SortComparison.selectionSort(copy);
-    	endTime = System.nanoTime();
-    	totalTime += (endTime - startTime);
-    	
-    	//test 3
-    	copy = tenNumbers;
-    	startTime = System.nanoTime();
-    	SortComparison.selectionSort(copy);
-    	endTime = System.nanoTime();
-    	totalTime += (endTime - startTime);
-    	
-    	
-    	long averageTime = totalTime / 3;
-    	//divide by a million for milli secconds
-    	System.out.print(averageTime );
-    	
-    	
-    }
+   
     
    
     
