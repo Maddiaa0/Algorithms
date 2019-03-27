@@ -51,10 +51,12 @@ differences between their implementation and performance.
 Download CompetitionDijkstra.java file.
 Write a java class CompetitionDijkstra in CompetitionDijkstra.java file (please do not use custom
 packages as web-cat will give an error) which should implement at least the following methods:
+
 • CompetitionDijkstra (String filename, int sA, int sB, int sC) – constructor for this class should
 take the four parameters as specified in the input, and create and populate the most
 appropriate data structure in which to hold the city road network in this example. Walking
 speeds should be stored in member variables.
+
 • public int timeRequiredforCompetition()- this method should return an integer indicating
 the minimum number of minutes that will pass before the three contestants can meet in the
 city generated in your constructor, if they start to walk immediately after the show starts.
@@ -73,13 +75,17 @@ have the exact same functionality and the same Constructor parameters and method
 specified in part 1 but use Floyd-Warshall’s algorithm to generate shortest paths.
 
 
+
 3. Testing
 Write a java class CompetitionTests in CompetitionTests.java file, which should implement JUnit
 tests for your CompetitionDijkstra and CompetitionFloydWarshall classes
 Your goal is to write enough tests so that:
+
 • Each method in in the classes is tested at least once,
+
 • Each decision (that is, every branch of if-then-else, for, and other kinds of choices) in is
 tested at least once,
+
 • Each line of code in all classes is executed at least once from the tests.
 The submission server will analyse your tests and code to determine if the above criteria have been
 satisfied.
