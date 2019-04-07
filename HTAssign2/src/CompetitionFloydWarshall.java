@@ -1,4 +1,6 @@
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 
@@ -22,10 +24,20 @@ import java.util.Scanner;
 public class CompetitionFloydWarshall {
 	
 	//Class variables
-	String filename = "";
-	int sA = 0;
-	int sB = 0;
-	int sC = 0;
+	private String filename = "";
+	private int sA = 0;
+	private int sB = 0;
+	private int sC = 0;
+	
+	//for what the file returns
+	private int noOfIntersections = 0;
+	private int noOfStreets = 0;
+	private ArrayList<String> graphString = new ArrayList<String>();
+	
+	
+	//2D grpah for the thing to work on
+	double[][] twoDGraph;
+	
 
     /**
      * @param filename: A filename containing the details of the city road network
@@ -38,44 +50,183 @@ public class CompetitionFloydWarshall {
     	this.sA = sA;
     	this.sB = sB;
     	this.sC = sC;
+    	
+    	//read the file (user defined functions below
+    	parseFile(fileScanner(filename));
+    	
+    	//TODO: convert arraylist to just array
+    	
+    	/*
+    	for( int i = 0; i < graphString.size(); i++) {
+    		System.out.println(graphString.get(i));
+    	}
+    	*/
+    	
+    	twoDGraph = create2DGraph(this.noOfIntersections, this.noOfStreets, graphString);
+    	
+    	/*
+    	//test, print out the array
+    	for (int i = 0; i < noOfIntersections; i++) {
+    		for(int j = 0; j<noOfIntersections; j++) {
+    			System.out.print(twoDGraph[i][j] + " ");
+    		}
+    		System.out.println();
+    	}
+    	*/
+    	
+    	
+    	floydWarshallConstruction(twoDGraph, noOfIntersections);
+    	
+    	/*
+    	System.out.println();
+    	for (int i = 0; i < noOfIntersections; i++) {
+    		for(int j = 0; j<noOfIntersections; j++) {
+    			System.out.print(twoDGraph[i][j] + " ");
+    		}
+    		System.out.println();
+    	}
+    	*/
+    	
         //TODO
     }
-
+    
+    
+    /*
+     * 
+     * For TESTING AND STUFF, REMOVE AT END
+     */
+    public static void main(String[] args) {
+    	
+    	CompetitionFloydWarshall tiny = new CompetitionFloydWarshall("tinyEWD.txt", 1, 1, 1);
+    	tiny.timeRequiredforCompetition();
+    	
+    	CompetitionFloydWarshall big = new CompetitionFloydWarshall("1000EWD.txt", 50, 50, 50);
+    	big.timeRequiredforCompetition();
+    	
+    }
+    
 
     /**
      * @return int: minimum minutes that will pass before the three contestants can meet
      */
     public int timeRequiredforCompetition(){
-
-        //TO DO
+    	
+    	//pick random numbers for sA, sB, sC
+    	/*
+    	Random random = new Random();
+    	this.sA = 50 + random.nextInt(50);
+    	this.sB = 50 + random.nextInt(50);
+    	this.sC = 50 + random.nextInt(50);
+    	*/
+    	//just use slowest speed
+    	this.sA = 50;
+    	this.sB = 50;
+    	this.sC = 50;
+    	
+    	double maxDistance = 0;
+    	
+    	
+    	//for each possible intersection, how long will it take for each to get there from a random spot
+    	for (int k = 0; k < this.noOfIntersections; k++) {
+    		//the meeting spot
+    		for(int x = 0; x< this.noOfIntersections; x++) {
+    			//contestant 1 starts at x
+    			for(int y = 0; y< this.noOfIntersections; y++) {
+    				//contestant 2 starts at y
+    				for(int z = 0; z< this.noOfIntersections; z++) {
+    				//contestant 3 starts at z
+    					if (maxDistance < (this.twoDGraph[x][k] + this.twoDGraph[y][k] + this.twoDGraph[z][k])) {
+    						maxDistance = (this.twoDGraph[x][k] + this.twoDGraph[y][k] + this.twoDGraph[z][k]);
+    					}
+    					
+    				}
+    			}
+    		}
+    	}
+    	
+    	//the distance in kilometers * the speed
+    	System.out.println(Math.ceil(maxDistance * 1000) / 50);
+    	
         return -1;
     }
+   
     
     
-    public void parseFile(Scanner scannedFile) {
-    	//this will read the scanned file, and make sense of the passed in file
+    /*
+     * Floyd-Marsall algorithm 
+     */
+    private void floydWarshallConstruction(double[][] twoDGraph, int noOfIntersections) {
     	
-    	int noOfIntersections = 0;
-    	int noOfStreets = 0;
-    	
-    	
-    	
-    	if (scannedFile.hasNextInt()) {
-    		noOfIntersections = scannedFile.nextInt();
+    	//basic implementation of floydWarshall
+    	for(int k = 0; k< noOfIntersections; k++) {
+    		for(int i = 0; i < noOfIntersections; i++) {
+    			for(int j = 0; j < noOfIntersections; j++) {
+    				//comparision, see if shorter
+    				if (twoDGraph[i][j] > twoDGraph[i][k] + twoDGraph[k][j]) {
+    					//change the entry
+    					twoDGraph[i][j] = twoDGraph[i][k] + twoDGraph[k][j];
+    				}
+    			}
+    		}
     	}
-    	if (scannedFile.hasNextInt()) {
-    		noOfIntersections = scannedFile.nextInt();
-    	}
-    	
-    	//do the rest of the list
-    	
     	
     }
     
+    
+    private double[][] create2DGraph(int noOfIntersections, int noOfStreets, ArrayList<String> graphString) {
+    	
+    	//new graph to populate with data from graphString array
+    	double[][] graph = new double[noOfIntersections][noOfIntersections];
+    	
+    	//init all to -1
+    	for (int i = 0; i<noOfIntersections; i++) {
+    		for(int j = 0; j<noOfIntersections; j++) {
+    			graph[i][j] = Double.POSITIVE_INFINITY;
+    		}
+    	}
+    	//init vertexes to 0
+    	for (int i = 0; i < noOfIntersections; i++) {
+    		graph[i][i] = 0;
+    	}
+    	
+    	for (int i = 0; (i< graphString.size()); i++) {
+    		//scan each line of the graphString and put into array
+    		Scanner lineReader = new Scanner(graphString.get(i));
+    		int street = lineReader.nextInt();
+    		int connectingStreet = lineReader.nextInt();
+    		double distance = lineReader.nextDouble();
+    		
+    		graph[street][connectingStreet] = distance;
+    		lineReader.close();
+    	}
+    	
+    	return graph;
+    }
+    
+    
+    private void parseFile(Scanner scannedFile) {
+    	//this will read the scanned file, and make sense of the passed in file
+    	graphString.clear();
+    	
+    	//read each line of the readin file place into corresponding variables
+    	if (scannedFile.hasNextInt()) {
+    		this.noOfIntersections = scannedFile.nextInt();
+    	}
+    	if (scannedFile.hasNextInt()) {
+    		this.noOfStreets = scannedFile.nextInt();
+    		//skip to the next line to prevent an empty read
+    		scannedFile.nextLine();
+    	}
+    	//read the rest of the file
+    	while (scannedFile.hasNextLine()){ 
+	   		graphString.add(scannedFile.nextLine());
+    	}
+    		
+    }
     
     
     //method to open file
-    public static Scanner fileScanner(String fileName) {
+    private static Scanner fileScanner(String fileName) {
     	try {
     		//use a file scanner and file.io to return the file
     		Scanner fileScan = new Scanner(new File(fileName));
