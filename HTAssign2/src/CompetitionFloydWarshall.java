@@ -52,42 +52,17 @@ public class CompetitionFloydWarshall {
     	this.sC = sC;
     	
     	//read the file (user defined functions below
-    	parseFile(fileScanner(filename));
+    	try {
+    		parseFile(fileScanner(filename));
     	
-    	//TODO: convert arraylist to just array
-    	
-    	/*
-    	for( int i = 0; i < graphString.size(); i++) {
-    		System.out.println(graphString.get(i));
+	    	//TODO: convert arraylist to just array
+	    	twoDGraph = create2DGraph(this.noOfIntersections, this.noOfStreets, graphString);
+	    	floydWarshallConstruction(twoDGraph, noOfIntersections);
     	}
-    	*/
-    	
-    	twoDGraph = create2DGraph(this.noOfIntersections, this.noOfStreets, graphString);
-    	
-    	/*
-    	//test, print out the array
-    	for (int i = 0; i < noOfIntersections; i++) {
-    		for(int j = 0; j<noOfIntersections; j++) {
-    			System.out.print(twoDGraph[i][j] + " ");
-    		}
-    		System.out.println();
+    	catch(Exception e) {
+    		System.out.print("Constructor failed, invalid input");
+    		filename = "Invalid file name";
     	}
-    	*/
-    	
-    	
-    	floydWarshallConstruction(twoDGraph, noOfIntersections);
-    	
-    	/*
-    	System.out.println();
-    	for (int i = 0; i < noOfIntersections; i++) {
-    		for(int j = 0; j<noOfIntersections; j++) {
-    			System.out.print(twoDGraph[i][j] + " ");
-    		}
-    		System.out.println();
-    	}
-    	*/
-    	
-        //TODO
     }
     
     
@@ -95,59 +70,51 @@ public class CompetitionFloydWarshall {
      * 
      * For TESTING AND STUFF, REMOVE AT END
      */
+    /*
     public static void main(String[] args) {
     	
-    	CompetitionFloydWarshall tiny = new CompetitionFloydWarshall("tinyEWD.txt", 1, 1, 1);
-    	tiny.timeRequiredforCompetition();
+    	CompetitionFloydWarshall tiny = new CompetitionFloydWarshall("tinyEWD.txt", 100, 80, 77);
+    	System.out.println(tiny.timeRequiredforCompetition());
     	
     	CompetitionFloydWarshall big = new CompetitionFloydWarshall("1000EWD.txt", 50, 50, 50);
-    	big.timeRequiredforCompetition();
+    	System.out.println(big.timeRequiredforCompetition());
     	
     }
+    */
     
 
     /**
      * @return int: minimum minutes that will pass before the three contestants can meet
      */
     public int timeRequiredforCompetition(){
-    	
-    	//pick random numbers for sA, sB, sC
-    	/*
-    	Random random = new Random();
-    	this.sA = 50 + random.nextInt(50);
-    	this.sB = 50 + random.nextInt(50);
-    	this.sC = 50 + random.nextInt(50);
-    	*/
-    	//just use slowest speed
-    	this.sA = 50;
-    	this.sB = 50;
-    	this.sC = 50;
-    	
-    	double maxDistance = 0;
-    	
-    	
-    	//for each possible intersection, how long will it take for each to get there from a random spot
-    	for (int k = 0; k < this.noOfIntersections; k++) {
-    		//the meeting spot
-    		for(int x = 0; x< this.noOfIntersections; x++) {
-    			//contestant 1 starts at x
-    			for(int y = 0; y< this.noOfIntersections; y++) {
-    				//contestant 2 starts at y
-    				for(int z = 0; z< this.noOfIntersections; z++) {
-    				//contestant 3 starts at z
-    					if (maxDistance < (this.twoDGraph[x][k] + this.twoDGraph[y][k] + this.twoDGraph[z][k])) {
-    						maxDistance = (this.twoDGraph[x][k] + this.twoDGraph[y][k] + this.twoDGraph[z][k]);
-    					}
-    					
-    				}
-    			}
-    		}
+    	//make sure speeds are correct
+    	if ((this.sA < 50 || this.sA > 100) || (this.sB <50 || this.sB > 100) || (this.sC < 50 || this.sB > 100)) {
+    		return -1;
     	}
     	
-    	//the distance in kilometers * the speed
-    	System.out.println(Math.ceil(maxDistance * 1000) / 50);
+    	//get slowest speed
+    	int slowestSpeed = 0;
+    	if (this.sA < this.sB && this.sA < this.sC) {
+    		slowestSpeed = sC;
+    	} 
+    	else if (this.sB < this.sA && this.sB < this.sC) {
+    		slowestSpeed = this.sB;
+    	}
+    	else {
+    		slowestSpeed = this.sC;
+    	}
     	
-        return -1;
+    	//get the shortest distance from the graph
+    	double maxDistance = 0;
+    	for (double[] array : twoDGraph) {
+            for (double dist : array) {
+                if (maxDistance < dist)
+                    maxDistance = dist;
+            }
+        }
+
+    	//the distance in kilometers * the speed    	
+        return (int) Math.ceil((maxDistance * 1000) / slowestSpeed);
     }
    
     
