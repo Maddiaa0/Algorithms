@@ -30,6 +30,7 @@ public class CompetitionDijkstra {
 	int sC = 0;
 	int noOfIntersections = 0;
 	int noOfStreets = 0;
+	boolean validFile = true;
 	
 	ArrayList<String> graphString;
 	//EdgeWeightedGraph graph;
@@ -54,25 +55,25 @@ public class CompetitionDijkstra {
 
     	
     	//file reading stuff
-    	parseFile(fileScanner(filename));
     	
-    	//create WeightedGraph
-    	//graph = createWeightedGraph();
-    	graphM = createGraph();
+    	parseFile(fileScanner(filename));
     	
     	
     	
     }
     
-    /*
+    
     public static void main(String[] args) {
     	CompetitionDijkstra lil = new CompetitionDijkstra("tinyEWD.txt", 50, 50 ,50);
     	System.out.print(lil.timeRequiredforCompetition());
     	
     	CompetitionDijkstra big = new CompetitionDijkstra("1000EWD.txt", 50, 50 ,50);
     	System.out.print(big.timeRequiredforCompetition());
+    	
+    	CompetitionDijkstra A = new CompetitionDijkstra("input-A.txt", 50, 50 ,50);
+    	System.out.print(A.timeRequiredforCompetition());
     }
-    */
+    
 
 
     /**
@@ -80,8 +81,17 @@ public class CompetitionDijkstra {
      */
     public int timeRequiredforCompetition(){
     	
+    	if (!validFile) {
+    		return -1;
+    	}
+    	
+    	//create WeightedGraph
+    	//graph = createWeightedGraph();
+    	graphM = createGraph();
+    	
+    	
     	//make sure speeds are correct
-    	if ((this.sA < 50 || this.sA > 100) || (this.sB <50 || this.sB > 100) || (this.sC < 50 || this.sB > 100)) {
+    	if ((sA > 100 || sA < 50) || (sB > 100 || sB < 50) || (sC > 100 || sC < 50)) {
     		return -1;
     	}
     	
@@ -97,80 +107,75 @@ public class CompetitionDijkstra {
     		slowestSpeed = this.sC;
     	}
     	
-    	double maxDistance = 0;
-    	for (int i = 0; i< this.noOfIntersections; i++) {
-    		
-    		double maxForInterSection = dijkstra(i);
-    		
-    		if (maxDistance == -1) {
-    			return -1;
-    		} else {
-    			if (maxDistance < maxForInterSection) {
-					maxDistance = maxForInterSection;
-				} 
-    		}
-		
-    		
+    	double maxDistance = dijkstra();
+    	
+    	if (maxDistance == -1) {
+    		return -1;
+    	}else {
+    		return (int) ((Math.ceil((maxDistance * 1000)/slowestSpeed)));
     	}
-    	
-    	return (int) ((Math.ceil((maxDistance * 1000)/slowestSpeed)));
-    	
     }
     
     
     
     
-    private double dijkstra(int startingIntersection) {
+    private double dijkstra() {
 		
-		double currentMaxDist = 0;
-		
-			
-		//initialise dijkstra parameters
-		int queueSize = 1;
-		double[] dist = new double[this.noOfIntersections];
-		boolean[] marked = new boolean[this.noOfIntersections];
-		boolean[] reached = new boolean[this.noOfIntersections];
-		
-		//initiliase all values
-		for (int i = 0; i < this.noOfIntersections; i++) {
-			dist[i] = Double.POSITIVE_INFINITY;
-			marked[i] = false;
-			reached[i] = false;
-		}
-		
-		//set values for first node
-		dist[startingIntersection] = 0;
-		reached[startingIntersection] = true;
-
-		
-		do {
-			//find shortest distance
-			int indexOfShortest = getShortestPath(dist, marked);
-			for (int j = 0; j < noOfIntersections; j++) {
-				
-				//compare
-				if (((graphM[indexOfShortest][j] + dist[indexOfShortest]) < dist[j]) && (!marked[j])) {
-					dist[j] = (graphM[indexOfShortest][j] + dist[indexOfShortest]);
-					queueSize++;
-					reached[j] = true;
-					
-					//find the next longest
-					if (dist[j] > currentMaxDist) {
-						currentMaxDist = dist[j];
-					}
-					
-				}
-			}
-			marked[indexOfShortest] = true;
-			queueSize--;
-		} while (queueSize > 0);
-		
-		if (currentMaxDist == Double.POSITIVE_INFINITY) {
-			return -1;
-		}
-		
-		return currentMaxDist;	
+	 double currentMaxDist = 0;
+     for (int startingIntersection = 0; startingIntersection< this.noOfIntersections; startingIntersection++) {
+         //initialise dijkstra parameters
+         int queueSize = 1;
+         double[] dist = new double[this.noOfIntersections];
+         boolean[] marked = new boolean[this.noOfIntersections];
+         boolean[] reached = new boolean[this.noOfIntersections];
+	     
+         //initiliase all values
+         for (int i = 0; i < this.noOfIntersections; i++) {
+        	 dist[i] = Double.POSITIVE_INFINITY;
+        	 marked[i] = false;
+        	 reached[i] = false;
+         }
+         //set values for first node
+         dist[startingIntersection] = 0;
+         reached[startingIntersection] = true;
+         
+         
+         while (queueSize > 0){
+        	 //find shortest distance
+        	 int indexOfShortest = getShortestPath(dist, marked);
+        	 for (int j = 0; j < noOfIntersections; j++) {
+        
+        		 //compare
+        		 if (((graphM[indexOfShortest][j] + dist[indexOfShortest]) < dist[j]) && (!marked[j])) {
+        			 dist[j] = (graphM[indexOfShortest][j] + dist[indexOfShortest]);
+        			 queueSize++;
+        			 reached[j] = true;
+        		 }
+        	 }
+        	 
+        	 marked[indexOfShortest] = true;
+        	 queueSize--;
+         } ;
+         //check if valid
+         
+         double max= getHighestValue(dist);
+         if (max == Double.POSITIVE_INFINITY) {
+        	 return -1;
+         }
+         if (max > currentMaxDist) {
+        	 currentMaxDist = max;
+         }	
+     }  	
+     
+     return currentMaxDist;  
     }
+    
+    private double getHighestValue(double[] dist) {
+		double highest = 0;
+		for (int i = 0; i < dist.length; i++)
+			highest = (dist[i] > highest) ? dist[i] : highest;
+		return highest;
+	}
     
     //get the current smallest 
     private int getShortestPath(double[] dist, boolean[] marked) {
@@ -217,33 +222,39 @@ public class CompetitionDijkstra {
     
     private void parseFile(Scanner scannedFile) {
     	//this will read the scanned file, and make sense of the passed in file
-    	graphString.clear();
+    	if (validFile) {
+    		graphString.clear();
     	
-    	//read each line of the readin file place into corresponding variables
-    	if (scannedFile.hasNextInt()) {
-    		this.noOfIntersections = scannedFile.nextInt();
-    	}
-    	if (scannedFile.hasNextInt()) {
-    		this.noOfStreets = scannedFile.nextInt();
-    		//skip to the next line to prevent an empty read
-    		scannedFile.nextLine();
-    	}
-    	//read the rest of the file
-    	while (scannedFile.hasNextLine()){ 
-	   		graphString.add(scannedFile.nextLine());
-    	}
-    		
+    		try {
+		    	//read each line of the readin file place into corresponding variables
+		    	if (scannedFile.hasNextInt()) {
+		    		this.noOfIntersections = scannedFile.nextInt();
+		    	}
+		    	if (scannedFile.hasNextInt()) {
+		    		this.noOfStreets = scannedFile.nextInt();
+		    		//skip to the next line to prevent an empty read
+		    		scannedFile.nextLine();
+		    	}
+		    	//read the rest of the file
+		    	while (scannedFile.hasNextLine()){ 
+			   		graphString.add(scannedFile.nextLine());
+		    	}
+    		}catch (Exception e) {
+    			System.out.print(e);
+    		}
+    	}	
     }
     
     
     //method to open file
-    private static Scanner fileScanner(String fileName) {
+    private Scanner fileScanner(String fileName) {
     	try {
     		//use a file scanner and file.io to return the file
     		Scanner fileScan = new Scanner(new File(fileName));
     		return fileScan;
     	}catch (Exception e) {
     		System.out.println("Cannot open file");
+    		validFile = false;
     		return null;
     	}
     }

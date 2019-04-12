@@ -13,6 +13,13 @@ public class CompetitionTests {
 
 		CompetitionFloydWarshall floydWarshall = new CompetitionFloydWarshall(filename, contestantSpeed,
 				contestantSpeed, contestantSpeed);
+		
+		//for invalid file 
+		int result1 = new CompetitionFloydWarshall("", contestantSpeed,contestantSpeed, contestantSpeed).timeRequiredforCompetition();
+    	assertEquals("invalid filename should return -1", result1, -1);
+    	
+    	int result2 = new CompetitionFloydWarshall(filename, 50 , 50, 50).timeRequiredforCompetition();
+    	assertEquals("valid file should return 38", result2, 38);
     	
     }
 
@@ -23,6 +30,14 @@ public class CompetitionTests {
 
 		CompetitionDijkstra dijkstra = new CompetitionDijkstra(filename, contestantSpeed,
 				contestantSpeed, contestantSpeed);
+		
+		//for invalid file 
+		int result1 = new CompetitionDijkstra("", contestantSpeed,contestantSpeed, contestantSpeed).timeRequiredforCompetition();
+    	assertEquals("invalid filename should return -1", result1, -1);
+    	
+    	int result2 = new CompetitionDijkstra(filename, 50 , 50, 50).timeRequiredforCompetition();
+    	assertEquals("valid file should return 38", result2, 38);
+    	
     }
 
     //TODO - more tests

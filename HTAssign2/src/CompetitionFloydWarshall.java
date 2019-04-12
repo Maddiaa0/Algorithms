@@ -38,6 +38,8 @@ public class CompetitionFloydWarshall {
 	//2D grpah for the thing to work on
 	double[][] twoDGraph;
 	
+	boolean validFile = true;
+	
 
     /**
      * @param filename: A filename containing the details of the city road network
@@ -52,17 +54,7 @@ public class CompetitionFloydWarshall {
     	this.sC = sC;
     	
     	//read the file (user defined functions below
-    	try {
-    		parseFile(fileScanner(filename));
-    	
-	    	//TODO: convert arraylist to just array
-	    	twoDGraph = create2DGraph(this.noOfIntersections, this.noOfStreets, graphString);
-	    	floydWarshallConstruction(twoDGraph, noOfIntersections);
-    	}
-    	catch(Exception e) {
-    		System.out.print("Constructor failed, invalid input");
-    		filename = "Invalid file name";
-    	}
+    	parseFile(fileScanner(filename));
     }
     
     
@@ -70,7 +62,7 @@ public class CompetitionFloydWarshall {
      * 
      * For TESTING AND STUFF, REMOVE AT END
      */
-    /*
+    
     public static void main(String[] args) {
     	
     	CompetitionFloydWarshall tiny = new CompetitionFloydWarshall("tinyEWD.txt", 100, 80, 77);
@@ -79,42 +71,58 @@ public class CompetitionFloydWarshall {
     	CompetitionFloydWarshall big = new CompetitionFloydWarshall("1000EWD.txt", 50, 50, 50);
     	System.out.println(big.timeRequiredforCompetition());
     	
+    	CompetitionFloydWarshall A = new CompetitionFloydWarshall("input-A.txt", 50, 50, 50);
+    	System.out.println(A.timeRequiredforCompetition());  
+    	
+    	CompetitionFloydWarshall noFile = new CompetitionFloydWarshall("", 50, 50, 50);
+    	System.out.println(noFile.timeRequiredforCompetition());  
     }
-    */
+    
     
 
     /**
      * @return int: minimum minutes that will pass before the three contestants can meet
      */
     public int timeRequiredforCompetition(){
-    	//make sure speeds are correct
-    	if ((this.sA < 50 || this.sA > 100) || (this.sB <50 || this.sB > 100) || (this.sC < 50 || this.sB > 100)) {
+    	
+    	if (validFile) {
+	    	twoDGraph = create2DGraph(this.noOfIntersections, this.noOfStreets, graphString);
+		    floydWarshallConstruction(twoDGraph, noOfIntersections);
+	    	
+	    	//make sure speeds are correct
+	    	if ((sA > 100 || sA < 50) || (sB > 100 || sB < 50) || (sC > 100 || sC < 50)) {
+	    		return -1;
+	    	}
+	    	
+	    	//get slowest speed
+	    	int slowestSpeed = 0;
+	    	if (this.sA < this.sB && this.sA < this.sC) {
+	    		slowestSpeed = sC;
+	    	} 
+	    	else if (this.sB < this.sA && this.sB < this.sC) {
+	    		slowestSpeed = this.sB;
+	    	}
+	    	else {
+	    		slowestSpeed = this.sC;
+	    	}
+	    	
+	    	//get the shortest distance from the graph
+	    	double maxDistance = 0;
+	    	for (double[] array : twoDGraph) {
+	            for (double dist : array) {
+	                if (maxDistance < dist)
+	                    maxDistance = dist;
+	            }
+	        }
+	    	if (maxDistance == Double.POSITIVE_INFINITY){
+	    		return -1;
+	    	}
+	
+	    	//the distance in kilometers * the speed    	
+	        return (int) Math.ceil((maxDistance * 1000) / slowestSpeed);
+    	} else {
     		return -1;
     	}
-    	
-    	//get slowest speed
-    	int slowestSpeed = 0;
-    	if (this.sA < this.sB && this.sA < this.sC) {
-    		slowestSpeed = sC;
-    	} 
-    	else if (this.sB < this.sA && this.sB < this.sC) {
-    		slowestSpeed = this.sB;
-    	}
-    	else {
-    		slowestSpeed = this.sC;
-    	}
-    	
-    	//get the shortest distance from the graph
-    	double maxDistance = 0;
-    	for (double[] array : twoDGraph) {
-            for (double dist : array) {
-                if (maxDistance < dist)
-                    maxDistance = dist;
-            }
-        }
-
-    	//the distance in kilometers * the speed    	
-        return (int) Math.ceil((maxDistance * 1000) / slowestSpeed);
     }
    
     
@@ -173,33 +181,42 @@ public class CompetitionFloydWarshall {
     
     private void parseFile(Scanner scannedFile) {
     	//this will read the scanned file, and make sense of the passed in file
-    	graphString.clear();
     	
-    	//read each line of the readin file place into corresponding variables
-    	if (scannedFile.hasNextInt()) {
-    		this.noOfIntersections = scannedFile.nextInt();
-    	}
-    	if (scannedFile.hasNextInt()) {
-    		this.noOfStreets = scannedFile.nextInt();
-    		//skip to the next line to prevent an empty read
-    		scannedFile.nextLine();
-    	}
-    	//read the rest of the file
-    	while (scannedFile.hasNextLine()){ 
-	   		graphString.add(scannedFile.nextLine());
-    	}
+    	if (validFile) {
+	    	
+    		graphString.clear();
+	    	
+    		try {
+		    	//read each line of the readin file place into corresponding variables
+		    	if (scannedFile.hasNextInt()) {
+		    		this.noOfIntersections = scannedFile.nextInt();
+		    	}
+		    	if (scannedFile.hasNextInt()) {
+		    		this.noOfStreets = scannedFile.nextInt();
+		    		//skip to the next line to prevent an empty read
+		    		scannedFile.nextLine();
+		    	}
+		    	//read the rest of the file
+		    	while (scannedFile.hasNextLine()){ 
+			   		graphString.add(scannedFile.nextLine());
+		    	}
+    		} catch (Exception e) {
+    			System.out.println(e);
+    		}
+	    }
     		
     }
     
     
     //method to open file
-    private static Scanner fileScanner(String fileName) {
+    private Scanner fileScanner(String fileName) {
     	try {
     		//use a file scanner and file.io to return the file
     		Scanner fileScan = new Scanner(new File(fileName));
     		return fileScan;
     	}catch (Exception e) {
     		System.out.println("Cannot open file");
+    		validFile = false;
     		return null;
     	}
     }
