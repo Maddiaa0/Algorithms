@@ -19,6 +19,8 @@ import java.util.Scanner;
  * streets that the contestants can use to traverse the city.
  *
  * This class implements the competition using Floyd-Warshall algorithm
+ * 
+ * @author Sean Cheetham
  */
 
 public class CompetitionFloydWarshall {
@@ -63,6 +65,7 @@ public class CompetitionFloydWarshall {
      * For TESTING AND STUFF, REMOVE AT END
      */
     
+    /*
     public static void main(String[] args) {
     	
     	CompetitionFloydWarshall tiny = new CompetitionFloydWarshall("tinyEWD.txt", 100, 80, 77);
@@ -76,7 +79,32 @@ public class CompetitionFloydWarshall {
     	
     	CompetitionFloydWarshall noFile = new CompetitionFloydWarshall("", 50, 50, 50);
     	System.out.println(noFile.timeRequiredforCompetition());  
+   
+    	CompetitionFloydWarshall a = new CompetitionFloydWarshall("input-A.txt", 50, 50 ,50);
+    	System.out.print(a.timeRequiredforCompetition());
+    	System.out.println();
+    	
+    	//input-K.txt with speed = [76,73,81] should return 220
+    	CompetitionFloydWarshall K = new CompetitionFloydWarshall("input-K.txt", 76,73,81);
+    	System.out.print(K.timeRequiredforCompetition());
+    	System.out.println();
+    	
+    	//input-L.txt with speed = [63,77,95] should return 127
+    	CompetitionFloydWarshall L = new CompetitionFloydWarshall("input-L.txt", 63,77,95);
+    	System.out.print(L.timeRequiredforCompetition());
+    	System.out.println();
+    	
+    	//input-J.txt with speed = [98,70,84] should return -1
+    	CompetitionFloydWarshall J = new CompetitionFloydWarshall("input-J.txt", 98,70,84);
+    	System.out.print(J.timeRequiredforCompetition());
+    	System.out.println();
+    	
+    	//input-D.txt with speed = [50,80,60] should return 38
+    	CompetitionFloydWarshall D = new CompetitionFloydWarshall("input-D.txt", 50,80,60);
+    	System.out.print(D.timeRequiredforCompetition());
+    	System.out.println();
     }
+    */
     
     
 
@@ -88,16 +116,20 @@ public class CompetitionFloydWarshall {
     	if (validFile) {
 	    	twoDGraph = create2DGraph(this.noOfIntersections, this.noOfStreets, graphString);
 		    floydWarshallConstruction(twoDGraph, noOfIntersections);
-	    	
+	    		
 	    	//make sure speeds are correct
 	    	if ((sA > 100 || sA < 50) || (sB > 100 || sB < 50) || (sC > 100 || sC < 50)) {
+	    		return -1;
+	    	}
+	    	
+	    	if (this.noOfIntersections == 0) {
 	    		return -1;
 	    	}
 	    	
 	    	//get slowest speed
 	    	int slowestSpeed = 0;
 	    	if (this.sA < this.sB && this.sA < this.sC) {
-	    		slowestSpeed = sC;
+	    		slowestSpeed = sA;
 	    	} 
 	    	else if (this.sB < this.sA && this.sB < this.sC) {
 	    		slowestSpeed = this.sB;
