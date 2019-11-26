@@ -1,13 +1,15 @@
-import static org.junit.jupiter.api.Assertions.*;
+//import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import org.junit.jupiter.api.Test;
+
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
+import org.junit.Test;
 //import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -78,6 +80,7 @@ public class SortComparisonTest
      *  Use this main method to create the experiments needed to answer the experimental performance questions of this assignment.
      *
      */
+	/*
     public static void main(String[] args)
     { 	
         //TODO: implement this method
@@ -117,6 +120,7 @@ public class SortComparisonTest
     	
     	
     }
+    */
 	
 	
 	/*
@@ -155,6 +159,8 @@ public class SortComparisonTest
     	//quick sort empty
     	assertEquals("Should return empty array", emptyArr,SortComparison.quickSort(emptyArr));
     	
+    	//selection sort Empty
+    	assertEquals("Should return empty array", emptyArr,SortComparison.selectionSort(emptyArr));
     	
     }
     
@@ -177,6 +183,9 @@ public class SortComparisonTest
     	
     	//quick sort null
     	assertNull(SortComparison.quickSort(nullArr));
+    	
+    	//selection sort null
+    	assertNull(SortComparison.selectionSort(nullArr));
     	
     }
 
@@ -202,7 +211,7 @@ public class SortComparisonTest
     	
     }
     
-    /*
+    
     @Test
     public void testQuickSort() {
     	//for a pre sorted array
@@ -222,21 +231,64 @@ public class SortComparisonTest
     	
     	
     }
-    */
+    
     
     @Test
     public void testMergeSortIterative() {
+    	//for a pre sorted array
+    	double[] arrSorted = {1,2,3,4,5,6};
+    	assertEquals("The array should remain the same as 1,2,3,4,5,6", arrSorted, SortComparison.mergeSortIterative(arrSorted));
+    	
+    	
+    	//for a random array
+    	double[] arrRandom = {2,4,3,1,6,5};
+    	double[] arrInsSort = SortComparison.mergeSortIterative(arrRandom);
+    	assertEquals("The array should be sorted to 1,2,3,4,5,6", "1.0, 2.0, 3.0, 4.0, 5.0, 6.0", SortComparison.arrToString(arrInsSort));
+    	
+    	//almost sorted array
+    	double[] arrAlmostSorted = {1,2,3,4,6,5};
+    	double[] sortedAlmostSort = SortComparison.mergeSortIterative(arrAlmostSorted);
+    	assertEquals("The array should be sorted to 1,2,3,4,5,6", "1.0, 2.0, 3.0, 4.0, 5.0, 6.0", SortComparison.arrToString(sortedAlmostSort));
+    	
 	}
     	
    
     
     @Test
     public void testMergeSortRecursive() {
+    	//for a pre sorted array
+    	double[] arrSorted = {1,2,3,4,5,6};
+    	assertEquals("The array should remain the same as 1,2,3,4,5,6", arrSorted, SortComparison.mergeSortRecursive(arrSorted));
+    	
+    	
+    	//for a random array
+    	double[] arrRandom = {2,4,3,1,6,5};
+    	double[] arrInsSort = SortComparison.mergeSortRecursive(arrRandom);
+    	assertEquals("The array should be sorted to 1,2,3,4,5,6", "1.0, 2.0, 3.0, 4.0, 5.0, 6.0", SortComparison.arrToString(arrInsSort));
+    	
+    	//almost sorted array
+    	double[] arrAlmostSorted = {1,2,3,4,6,5};
+    	double[] sortedAlmostSort = SortComparison.mergeSortRecursive(arrAlmostSorted);
+    	assertEquals("The array should be sorted to 1,2,3,4,5,6", "1.0, 2.0, 3.0, 4.0, 5.0, 6.0", SortComparison.arrToString(sortedAlmostSort));
     	
     }
     
     @Test
     public void testSelectionSort() {
+    	//for a pre sorted array
+    	double[] arrSorted = {1,2,3,4,5,6};
+    	assertEquals("The array should remain the same as 1,2,3,4,5,6", arrSorted, SortComparison.selectionSort(arrSorted));
+    	
+    	
+    	//for a random array
+    	double[] arrRandom = {2,4,3,1,6,5};
+    	double[] arrInsSort = SortComparison.selectionSort(arrRandom);
+    	assertEquals("The array should be sorted to 1,2,3,4,5,6", "1.0, 2.0, 3.0, 4.0, 5.0, 6.0", SortComparison.arrToString(arrInsSort));
+    	
+    	//almost sorted array
+    	double[] arrAlmostSorted = {1,2,3,4,6,5};
+    	double[] sortedAlmostSort = SortComparison.selectionSort(arrAlmostSorted);
+    	assertEquals("The array should be sorted to 1,2,3,4,5,6", "1.0, 2.0, 3.0, 4.0, 5.0, 6.0", SortComparison.arrToString(sortedAlmostSort));
     	
     }
     
@@ -246,7 +298,7 @@ public class SortComparisonTest
    
     
    
-    
+   /* 
     //get the items from the file
     public static double[] getFileContent(Scanner fileScan) {
     	ArrayList<String> content = new ArrayList<String>();
@@ -275,6 +327,7 @@ public class SortComparisonTest
     		return null;
     	}
     }
+    */
     
 
 }

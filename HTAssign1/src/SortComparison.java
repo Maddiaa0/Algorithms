@@ -1,5 +1,3 @@
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-
 // -------------------------------------------------------------------------
 
 /**
@@ -152,34 +150,24 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
      * @param a: An unsorted array of doubles.
      * @return after the method returns, the array must be in ascending sorted order.
      */
-
     static double[] mergeSortIterative (double a[]) {
+    	if (a == null) {
+    		return null;
+    	}
+    	
+        int length = a.length;
+        double[] aux = new double[length];
+        for (int i = 1; i < length; i = i + i) {
+            for (int low = 0; low < length - i; low += i + i) {
+                merge(a, aux, low, low+i-1, Math.min(low+i+i-1,length-1));
+            }
+        }
+        return a;
 
-		 //todo: implement the sort
-	 
-	    //check null	
-		if(a == null) {
-			return null;
-		}
-				
-		double [] aux = new double[a.length];
-		
-		int N = a.length;
-		
-		for(int currSize = 1; currSize < N ; currSize = 2 * currSize) {
-			
-			for(int low = 0; low < N - currSize; low += 2 * currSize) {
-				
-				merge(a, aux, low , low + currSize-1 , Math.min(low + 2 * currSize - 1, N-1));
-			
-			}
-		}
+    }//end mergeSortIterative
 
-		//return the sorted array
-		return a;
-    }//end mergesortIterative
-    
-        
+
+
     /**
      * Sorts an array of doubles using recursive implementation of Merge Sort.
      * This method is static, thus it can be called as SortComparison.sort(a)
@@ -188,65 +176,51 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
      * @return after the method returns, the array must be in ascending sorted order.
      */
     static double[] mergeSortRecursive (double a[]) {
-    	//TODO: implement the sort
     	if (a == null) {
     		return null;
     	}
     	
-    	double[] aux = new double[a.length];
-    	mergeSortRecursive(a, aux, 0, a.length - 1);
-    	
-    	//return the sorted array
-    	return a;
-	
-   }//end mergeSortRecursive
-    
-    private static void mergeSortRecursive(double a[], double aux[], int start, int end) {
-    	
-    	//done
-    	if (end <= start) {
-    		return;
-    	}
-    	
-    	//recursively call the splitting algorithm
-    	int mid = start + (end - start) / 2;
-    	mergeSortRecursive(a,aux,start,mid);
-    	mergeSortRecursive(a,aux,mid+1,end);
-    	
-    	//join the lists
-    	merge(a,aux,start,mid,end);
-    	
+        double[] aux = new double[a.length];
+        sort(a, aux, 0, a.length-1);
+        return a;
+
     }
-   
-    
-    //merge algorithm
-    private static void merge(double a[], double aux[], int low, int mid, int high) {
-    	
-    	for (int k = low; k <= high; k++) {
-    		aux[k] = a[k];
-    	}
-    	
-    	int i = low;
-    	int j = mid +1;
-    	
-    	for (int k = low; k <= high; k++) {
-    		
-    		if (i > mid) {
-    			a[k] = aux[j++];
-    		}
-    		else if (j > high) {
-    			a[k] = aux[i++];
-    		}
-    		else if (aux[j] < aux[i]) {
-    			a[k] = aux[j++];
-    		} 
-    		else {
-    			a[k] = a[i++];
-    		}
-    	}
-    	
+
+    private static void sort(double[] a, double[] aux, int low, int high) {
+        if (high <= low) {
+            return;
+        }
+        int mid = low + (high - low) / 2;
+        sort(a, aux, low, mid);
+        sort(a, aux, mid+1, high);
+        merge(a, aux, low, mid, high);
     }
-    
+
+    private static void merge(double[] a, double[] aux, int low, int mid, int high) {
+        
+        for (int k = low; k <= high; k++) {
+            aux[k] = a[k];
+        }
+
+        
+        int i = low, j = mid+1;
+        for (int k = low; k <= high; k++) {
+            if      (i > mid) {
+            	a[k] = aux[j++];
+            }
+            else if (j > high) {
+            	a[k] = aux[i++];
+            }
+            else if (aux[j] < aux[i]) {
+            	a[k] = aux[j++];
+            }
+            else {
+            	a[k] = aux[i++];
+            }
+        }
+    }
+    //end mergeSortRecursive
+
     
     /**
      * Sorts an array of doubles using Selection Sort.
@@ -292,11 +266,6 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
     
     
     
-    
-    
-    
-    
-    
     //make results comparable
     public static String arrToString(double[] a) {
     	String returnString = "";
@@ -306,57 +275,5 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
     	returnString += a[a.length-1];
     	
     	return returnString;
-    }
-
-
-    public static void main(String[] args) {
-
-        //todo: do experiments as per assignment instructions
-   	 double[] testArr = {5,6,43,1,2,3,43};
-	 
-	 double[] newArr = insertionSort(testArr);
-	 
-	 for (int i = 0; i < newArr.length; i++) {
-		 System.out.println(newArr[i]);
-	 }
-	 
-	 double[] testArr2 = {5,6,43,1,2,3,43};
-	 double[] newArr2 = selectionSort(testArr2);
-	 System.out.println();
-	 
-	 
-	 double[] testArr3 = {5,6,43,1,2,3,43};
-	 for (int i = 0; i < newArr2.length; i++) {
-		 System.out.println(newArr2[i]);
-	 }
-	 
-	
-	 double[] newArr3 = quickSort(testArr3);
-	 System.out.println();
-	 
-	 for (int i = 0; i < newArr3.length; i++) {
-		 System.out.println(newArr3[i]);
-	 }
-	 
-	 double[] testArr4 = {5,6,43,1,2,3,43};
-	 double[] newArr4 = mergeSortIterative(testArr4);
-	 System.out.println();
-	 
-	 for (int i = 0; i < newArr4.length; i++) {
-		 System.out.println(newArr4[i]);
-	 }
-	 
-	 double[] testArr5 = {5,6,43,1,2,3,43};
-	 double[] newArr5 = mergeSortRecursive(testArr5);
-	 System.out.println();
-	 
-	 for (int i = 0; i < newArr5.length; i++) {
-		 System.out.println(newArr5[i]);
-	 }
-	 
-	 
-	 
-	 
-	 
-   }    
+    }  
  }//end class
